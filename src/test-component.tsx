@@ -1,5 +1,6 @@
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
+import { useState } from 'react';
 import useProvider from './hooks/use-provider';
 import { NetworkTypes } from './types/config';
 
@@ -9,7 +10,7 @@ const TestComponent = () => {
 		supportedChainIds: [1, 4, 137, 56, 80001],
 	});
 
-	const provider = useProvider(NetworkTypes.BINANCE, library);
+	const provider = useProvider('signer', library, 'mainnet');
 
 	return (
 		<div>

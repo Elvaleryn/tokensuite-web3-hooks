@@ -1,7 +1,7 @@
-import { ethers } from 'ethers';
 import { NetworkTypes } from 'src/types/config';
 import { NetworkProvider } from 'src/types/config';
 import { networkProviders } from 'src/config/providers';
+import { AlchemyProvider, JsonRpcProvider } from '@ethersproject/providers';
 
 /**
  * Network Provider
@@ -9,8 +9,8 @@ import { networkProviders } from 'src/config/providers';
 export class Provider {
 	private static provider: {
 		[key: string]:
-			| ethers.providers.AlchemyProvider
-			| ethers.providers.JsonRpcProvider;
+			| AlchemyProvider
+			| JsonRpcProvider;
 	} = {};
 
 	/**
@@ -26,11 +26,11 @@ export class Provider {
 		} */
 
 		switch (network) {
-			case NetworkTypes.ETHEREUM:
+			case 'mainnet':
 				return networkProviders.ethereum;
-			case NetworkTypes.POLYGON:
+			case 'matic':
 				return networkProviders.polygon;
-			case NetworkTypes.BINANCE:
+			case 'binance':
 				return networkProviders.binance;
 			default:
 				return networkProviders.ethereum;
@@ -44,10 +44,10 @@ export class Provider {
 	 */
 	private static set(network: NetworkTypes) {
 		const provider = Provider.getProvider(network);
-		if (network === NetworkTypes.BINANCE) {
-			Provider.provider[network] = new ethers.providers.JsonRpcProvider(provider.rpcUrl)
+		if (network === 'binance') {
+			Provider.provider[network] = new JsonRpcProvider(provider.rpcUrl)
 		} else {
-			Provider.provider[network] = new ethers.providers.AlchemyProvider(
+			Provider.provider[network] = new AlchemyProvider(
 				provider.network,
 				provider.key
 			);
@@ -63,7 +63,7 @@ export class Provider {
 	 */
 	public static get(
 		network: NetworkTypes
-	): ethers.providers.AlchemyProvider | ethers.providers.JsonRpcProvider {
+	): AlchemyProvider | JsonRpcProvider {
 		if (!Provider.provider[network]) {
 			Provider.set(network);
 		}
