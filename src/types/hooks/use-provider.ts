@@ -2,4 +2,4 @@ import { AlchemyProvider, Web3Provider, JsonRpcSigner, JsonRpcProvider } from '@
 
 
 // Use Allowance Hook
-export type UseProvider = Web3Provider | AlchemyProvider | JsonRpcSigner | JsonRpcProvider;
+export type UseProvider = Web3Provider | AlchemyProvider | JsonRpcSigner | JsonRpcProvider | null;

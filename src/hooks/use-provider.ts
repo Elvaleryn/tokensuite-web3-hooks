@@ -11,17 +11,20 @@ import { Provider } from 'src/contract/provider';
 
 const useProvider = (
 	network: NetworkTypes,
-	library: Web3Provider,
-  fallback: NetworkTypes
+	library?: Web3Provider
 ): UseProvider => {
 	return useMemo(():
 		| Web3Provider
 		| AlchemyProvider
 		| JsonRpcSigner
-		| JsonRpcProvider => {
+		| JsonRpcProvider
+		| null => {
 		if (network === 'signer') {
 			if (library) return library.getSigner();
-      else return Provider.get(fallback);
+			else {
+        console.error('You tried to connect as a signer, wallet must be connected');
+				return null;
+			}
 		} else {
 			return Provider.get(network);
 		}
