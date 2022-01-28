@@ -22,6 +22,6 @@ export type NetworkProviders = {
   ethereum: NetworkProvider;
   polygon: NetworkProvider;
   binance: NetworkProvider;
-  rinkeby?: NetworkProvider;
-  mumbai?: NetworkProvider;
+  rinkeby: NetworkProvider;
+  mumbai: NetworkProvider;
 }

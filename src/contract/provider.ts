@@ -7,67 +7,58 @@ import { AlchemyProvider, JsonRpcProvider } from '@ethersproject/providers';
  * Network Provider
  */
 export class Provider {
-	private static provider: {
-		[key: string]:
-			| AlchemyProvider
-			| JsonRpcProvider;
-	} = {};
+  private static provider: {
+    [key: string]: AlchemyProvider | JsonRpcProvider;
+  } = {};
 
-	/**
-	 * @param {NetworkTypes} network
-	 *
-	 * @returns Network provider url
-	 */
-	private static getProvider(network: NetworkTypes): NetworkProvider {
-		// let provider: NetworkProvider = networkProviders.ethereum;
+  /**
+   * @param {NetworkTypes} network
+   *
+   * @returns Network provider url
+   */
+  private static getProvider(network: NetworkTypes): NetworkProvider {
+    switch (network) {
+      case 'mainnet':
+        return networkProviders.ethereum;
+      case 'matic':
+        return networkProviders.polygon;
+      case 'binance':
+        return networkProviders.binance;
+      case 'rinkeby':
+        return networkProviders.rinkeby;
+      case 'maticmum':
+        return networkProviders.mumbai;
+      default:
+        return networkProviders.ethereum;
+    }
+  }
 
-		/* if (network === NetworkTypes.POLYGON) {
-			provider = config.network.providers.polygon;
-		} */
+  /**
+   * Set Provider
+   *
+   * @param {NetworkTypes} network
+   */
+  private static set(network: NetworkTypes) {
+    const provider = Provider.getProvider(network);
+    if (network === 'binance') {
+      Provider.provider[network] = new JsonRpcProvider(provider.rpcUrl);
+    } else {
+      Provider.provider[network] = new AlchemyProvider(provider.network, provider.key);
+    }
+  }
 
-		switch (network) {
-			case 'mainnet':
-				return networkProviders.ethereum;
-			case 'matic':
-				return networkProviders.polygon;
-			case 'binance':
-				return networkProviders.binance;
-			default:
-				return networkProviders.ethereum;
-		}
-	}
+  /**
+   * Get Provider
+   *
+   * @param {NetworkTypes} network
+   *
+   * @returns Json Rpc Provider
+   */
+  public static get(network: NetworkTypes): AlchemyProvider | JsonRpcProvider {
+    if (!Provider.provider[network]) {
+      Provider.set(network);
+    }
 
-	/**
-	 * Set Provider
-	 *
-	 * @param {NetworkTypes} network
-	 */
-	private static set(network: NetworkTypes) {
-		const provider = Provider.getProvider(network);
-		if (network === 'binance') {
-			Provider.provider[network] = new JsonRpcProvider(provider.rpcUrl)
-		} else {
-			Provider.provider[network] = new AlchemyProvider(
-				provider.network,
-				provider.key
-			);
-		}
-	}
-
-	/**
-	 * Get Provider
-	 *
-	 * @param {NetworkTypes} network
-	 *
-	 * @returns Json Rpc Provider
-	 */
-	public static get(
-		network: NetworkTypes
-	): AlchemyProvider | JsonRpcProvider {
-		if (!Provider.provider[network]) {
-			Provider.set(network);
-		}
-
-		return Provider.provider[network];
-	}
+    return Provider.provider[network];
+  }
 }
